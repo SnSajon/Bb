@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Portal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; text-align: center; overflow-x: hidden; }
+
+        /* চারপাশের স্থায়ী অ্যাড স্লট */
+        .sticky-top { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: #1e293b; border-bottom: 2px solid #a855f7; z-index: 100; }
+        .sticky-bottom { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #1e293b; border-top: 2px solid #a855f7; z-index: 100; }
+        
+        .layout { display: flex; justify-content: space-between; margin: 70px auto; max-width: 1200px; padding: 10px; }
+        .side-ad { width: 20%; background: #1e293b; min-height: 500px; border: 1px dashed #a855f7; }
+        .main-content { width: 56%; background: #1e293b; padding: 20px; border-radius: 10px; }
+
+        /* ১ মিনিটের লকড ওভারলে/অ্যাড পপ-আপ */
+        .ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; }
+        .ad-box { width: 90%; max-width: 500px; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #a855f7; position: relative; }
+        
+        .timer-text { font-size: 18px; margin-bottom: 15px; color: #ec4899; font-weight: bold; }
+        .close-btn { display: none; margin-top: 15px; padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- ১. উপরের স্থায়ী অ্যাড -->
+    <div class="sticky-top">[ Sticky Top Banner Ad ]</div>
+
+    <div class="layout">
+        <!-- ২. বামপাশের স্থায়ী অ্যাড -->
+        <div class="side-ad">[ Left Banner Ad ]</div>
+
+        <!-- মূল কন্টেন্ট -->
+        <div class="main-content">
+            <h2>আপনার ফাইল লোড হচ্ছে...</h2>
+            <div style="margin: 20px 0; min-height: 200px; background: #334155;">[ In-Article Native Ad ]</div>
+        </div>
+
+        <!-- ৩. ডানপাশের স্থায়ী অ্যাড -->
+        <div class="side-ad">[ Right Banner Ad ]</div>
+    </div>
+
+    <!-- ৪. নিচের স্থায়ী অ্যাড -->
+    <div class="sticky-bottom">[ Sticky Bottom Banner Ad ]</div>
+
+    <!-- ৫. ইউজার ঢোকার সাথে সাথে ১ মিনিটের লকড পপ-আপ অ্যাড -->
+    <div id="full-ad-modal" class="ad-overlay">
+        <div class="ad-box">
+            <div class="timer-text">বিজ্ঞাপনটি দেখুন: <span id="sec-count">60</span> সেকেন্ড পর স্কিপ করা যাবে</div>
+            
+            <div style="min-height: 300px; background: #0f172a; padding: 10px; margin: 10px 0;">
+                <!-- Monetag Interstitial / High CPM Ad Tag Placement -->
+                [ Full Screen High CPM Ad ]
+            </div>
+
+            <button id="skip-btn" class="close-btn" onclick="closeAd()">অ্যাড বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <script>
+        // ৬০ সেকেন্ডের লক টাইমার লজিক
+        let timeLeft = 60;
+        const countDisplay = document.getElementById('sec-count');
+        const skipBtn = document.getElementById('skip-btn');
+
+        const adTimer = setInterval(() => {
+            timeLeft--;
+            countDisplay.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(adTimer);
+                document.querySelector('.timer-text').textContent = "এখন অ্যাড বন্ধ করতে পারেন:";
+                skipBtn.style.display = 'inline-block';
+            }
+        }, 1000);
+
+        function closeAd() {
+            document.getElementById('full-ad-modal').style.display = 'none';
+        }
+    </script>
+
+    <!-- Monetag Popunder Tag Here -->
+
+</body>
+</html>
