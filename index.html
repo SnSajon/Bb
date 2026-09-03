@@ -1,87 +1,166 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Portal</title>
+    <title>Pro Media & Content Hub</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; text-align: center; overflow-x: hidden; }
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --ad-bg: rgba(51, 65, 85, 0.5);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-glow: rgba(168, 85, 247, 0.3);
+        }
 
-        /* চারপাশের স্থায়ী অ্যাড স্লট */
-        .sticky-top { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: #1e293b; border-bottom: 2px solid #a855f7; z-index: 100; }
-        .sticky-bottom { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #1e293b; border-top: 2px solid #a855f7; z-index: 100; }
-        
-        .layout { display: flex; justify-content: space-between; margin: 70px auto; max-width: 1200px; padding: 10px; }
-        .side-ad { width: 20%; background: #1e293b; min-height: 500px; border: 1px dashed #a855f7; }
-        .main-content { width: 56%; background: #1e293b; padding: 20px; border-radius: 10px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding-bottom: 80px; }
 
-        /* ১ মিনিটের লকড ওভারলে/অ্যাড পপ-আপ */
-        .ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; }
-        .ad-box { width: 90%; max-width: 500px; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #a855f7; position: relative; }
-        
-        .timer-text { font-size: 18px; margin-bottom: 15px; color: #ec4899; font-weight: bold; }
-        .close-btn { display: none; margin-top: 15px; padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        /* Top Navigation Bar */
+        .navbar { background: var(--primary-gradient); padding: 16px 24px; text-align: center; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4); }
+
+        /* General Ad Placeholder Container */
+        .ad-slot { background: var(--ad-bg); border: 2px dashed var(--border-glow); border-radius: 12px; text-align: center; padding: 12px; margin: 12px auto; max-width: 1200px; color: var(--text-sub); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(10px); }
+
+        /* Sticky Bottom Ad Container */
+        .sticky-footer-ad { position: fixed; bottom: 0; left: 0; width: 100%; background: #1e293b; border-top: 2px solid #a855f7; text-align: center; padding: 8px; z-index: 999; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
+
+        /* App Grid Layout */
+        .app-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; max-width: 1280px; margin: 16px auto; padding: 0 16px; }
+        .sidebar-ad { width: 100%; max-width: 260px; display: flex; flex-direction: column; gap: 16px; }
+        .main-card { flex: 1; min-width: 300px; max-width: 680px; background: var(--card-bg); border: 1px solid var(--border-glow); border-radius: 20px; padding: 28px; text-align: center; backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+
+        /* Interactive Timer Box */
+        .timer-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; margin: 24px 0; }
+        .timer-card h3 { font-size: 18px; color: #e2e8f0; margin-bottom: 8px; }
+        .countdown-num { font-size: 28px; font-weight: 900; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Modern Gradient Action Button */
+        .action-btn { display: inline-block; width: 100%; max-width: 320px; padding: 16px 32px; background: var(--primary-gradient); color: #ffffff; text-decoration: none; font-size: 18px; font-weight: 700; border-radius: 12px; border: none; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4); }
+        .action-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(236, 72, 153, 0.6); }
+        .action-btn:disabled { background: #475569; box-shadow: none; cursor: not-allowed; opacity: 0.6; }
+
+        /* Interstitial Popup Window */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .modal-box { background: #1e293b; border: 1px solid var(--border-glow); border-radius: 20px; padding: 24px; text-align: center; max-width: 440px; width: 90%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        .close-modal { position: absolute; top: 12px; right: 16px; font-size: 24px; cursor: pointer; color: var(--text-sub); font-weight: bold; }
+        .close-modal:hover { color: #fff; }
+
+        @media (max-width: 1024px) {
+            .sidebar-ad { display: none; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ১. উপরের স্থায়ী অ্যাড -->
-    <div class="sticky-top">[ Sticky Top Banner Ad ]</div>
+    <!-- Header Banner -->
+    <div class="navbar">App Download Portal</div>
 
-    <div class="layout">
-        <!-- ২. বামপাশের স্থায়ী অ্যাড -->
-        <div class="side-ad">[ Left Banner Ad ]</div>
-
-        <!-- মূল কন্টেন্ট -->
-        <div class="main-content">
-            <h2>আপনার ফাইল লোড হচ্ছে...</h2>
-            <div style="margin: 20px 0; min-height: 200px; background: #334155;">[ In-Article Native Ad ]</div>
-        </div>
-
-        <!-- ৩. ডানপাশের স্থায়ী অ্যাড -->
-        <div class="side-ad">[ Right Banner Ad ]</div>
+    <!-- Top Sticky Ad Slot -->
+    <div class="ad-slot" style="min-height: 90px;">
+        <!-- Insert Monetag Header Banner (728x90 or 320x50) -->
+        [ Top Header Ad Banner ]
     </div>
 
-    <!-- ৪. নিচের স্থায়ী অ্যাড -->
-    <div class="sticky-bottom">[ Sticky Bottom Banner Ad ]</div>
+    <!-- Main Layout Container -->
+    <div class="app-container">
 
-    <!-- ৫. ইউজার ঢোকার সাথে সাথে ১ মিনিটের লকড পপ-আপ অ্যাড -->
-    <div id="full-ad-modal" class="ad-overlay">
-        <div class="ad-box">
-            <div class="timer-text">বিজ্ঞাপনটি দেখুন: <span id="sec-count">60</span> সেকেন্ড পর স্কিপ করা যাবে</div>
-            
-            <div style="min-height: 300px; background: #0f172a; padding: 10px; margin: 10px 0;">
-                <!-- Monetag Interstitial / High CPM Ad Tag Placement -->
-                [ Full Screen High CPM Ad ]
+        <!-- Left Sidebar Ad Column -->
+        <div class="sidebar-ad">
+            <div class="ad-slot" style="min-height: 300px;">[ Left Skyscraper Ad 1 ]</div>
+            <div class="ad-slot" style="min-height: 300px;">[ Left Skyscraper Ad 2 ]</div>
+        </div>
+
+        <!-- Central Main Functional Area -->
+        <div class="main-card">
+            <h1 style="font-size: 24px; margin-bottom: 8px;">Your Content Link is Preparing</h1>
+            <p style="color: var(--text-sub); font-size: 14px;">Please wait for the timer to complete to unlock your destination.</p>
+
+            <!-- Native Native In-Feed Ad Slot -->
+            <div class="ad-slot" style="min-height: 160px; margin: 20px 0;">
+                [ Native / In-Feed Smart Ad Slot ]
             </div>
 
-            <button id="skip-btn" class="close-btn" onclick="closeAd()">অ্যাড বন্ধ করুন</button>
+            <!-- Timer Box -->
+            <div class="timer-card">
+                <h3 id="status-title">Preparing direct access...</h3>
+                <div style="margin: 12px 0;">
+                    Unlocks in: <span id="timer" class="countdown-num">10</span>s
+                </div>
+                <button id="main-btn" class="action-btn" disabled onclick="handleDirectLink()">
+                    Unlock Access Link
+                </button>
+            </div>
+
+            <!-- In-Content Rectangle Ad Slot -->
+            <div class="ad-slot" style="min-height: 250px;">
+                [ In-Content Medium Rectangle Ad ]
+            </div>
+        </div>
+
+        <!-- Right Sidebar Ad Column -->
+        <div class="sidebar-ad">
+            <div class="ad-slot" style="min-height: 300px;">[ Right Skyscraper Ad 1 ]</div>
+            <div class="ad-slot" style="min-height: 300px;">[ Right Skyscraper Ad 2 ]</div>
+        </div>
+
+    </div>
+
+    <!-- Fixed Footer Ad Bar -->
+    <div class="sticky-footer-ad">
+        <div class="ad-slot" style="min-height: 50px; margin: 0 auto; max-width: 728px;">
+            [ Sticky Footer Ad Slot ]
         </div>
     </div>
 
-    <script>
-        // ৬০ সেকেন্ডের লক টাইমার লজিক
-        let timeLeft = 60;
-        const countDisplay = document.getElementById('sec-count');
-        const skipBtn = document.getElementById('skip-btn');
+    <!-- High-CPM Interstitial Pop-up Modal -->
+    <div id="ad-modal" class="modal-overlay">
+        <div class="modal-box">
+            <span class="close-modal" onclick="dismissModal()">&times;</span>
+            <h3 style="margin-bottom: 12px; color: var(--text-main);">Sponsored Offer</h3>
+            <div class="ad-slot" style="min-height: 250px; margin-bottom: 16px;">
+                <!-- Monetag Full-Screen / Modal Content -->
+                [ Full Screen Interstitial Ad Slot ]
+            </div>
+            <button class="action-btn" style="width: 100%; max-width: 100%; padding: 12px;" onclick="dismissModal()">Continue to Site</button>
+        </div>
+    </div>
 
-        const adTimer = setInterval(() => {
-            timeLeft--;
-            countDisplay.textContent = timeLeft;
-            if (timeLeft <= 0) {
-                clearInterval(adTimer);
-                document.querySelector('.timer-text').textContent = "এখন অ্যাড বন্ধ করতে পারেন:";
-                skipBtn.style.display = 'inline-block';
+    <!-- App JavaScript Logic -->
+    <script>
+        // Countdown timer logic to increase user dwell time
+        let count = 10;
+        const timerEl = document.getElementById('timer');
+        const mainBtn = document.getElementById('main-btn');
+        const statusTitle = document.getElementById('status-title');
+
+        const countdownInterval = setInterval(() => {
+            count--;
+            timerEl.textContent = count;
+            if (count <= 0) {
+                clearInterval(countdownInterval);
+                statusTitle.textContent = "Your link is ready!";
+                mainBtn.disabled = false;
             }
         }, 1000);
 
-        function closeAd() {
-            document.getElementById('full-ad-modal').style.display = 'none';
+        // Modal Dismiss Function
+        function dismissModal() {
+            document.getElementById('ad-modal').style.display = 'none';
+        }
+
+        // Direct Link Action Trigger
+        function handleDirectLink() {
+            // Replace with your Monetag Direct Link URL
+            window.open('https://your-monetag-direct-link.com', '_blank');
         }
     </script>
 
-    <!-- Monetag Popunder Tag Here -->
+    <!-- Paste Monetag Popunder and Smartlink Script Tags Here -->
 
 </body>
 </html>
